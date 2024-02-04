@@ -11,6 +11,11 @@
 -Spring Security
 - https://www.youtube.com/watch?v=KxqlJblhzfI&t=8s
 - ![img.png](images/img2.png)
+- Use AUthentication object rather than Principal object which is from java and not for spring
+- https://www.springcloud.io/post/2023-02/spring-webflux-security-jwt/#gsc.tab=0
+- https://www.bezkoder.com/spring-boot-jwt-auth-mongodb/
+- https://medium.com/gdplabs/deep-dive-into-spring-security-authentication-implementation-on-webflux-part-i-basic-1a467049900a
+- Why didnt I add expiration datas to my jwt, when i could hv used regenerate tokens?? - Simple answer, Laziness.
 
 - HTTP REST standards
     - (Response Status Codes) https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
