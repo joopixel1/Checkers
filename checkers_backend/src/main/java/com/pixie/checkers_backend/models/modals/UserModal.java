@@ -7,7 +7,10 @@ import org.springframework.lang.NonNull;
 
 @Getter
 @RequiredArgsConstructor
-public class LoginModal {
-    @NonNull @NotBlank private final String username;
-    @NonNull @NotBlank private final String password;
+public class UserModal {
+    private Boolean online;
+    private String country;
+    private String language;
+    private Byte[] image;
 }
+

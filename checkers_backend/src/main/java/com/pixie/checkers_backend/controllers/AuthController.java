@@ -21,7 +21,6 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final JWTTokenService jwtTokenService;
     private final AuthService authService;
 
     @PostMapping("/login")

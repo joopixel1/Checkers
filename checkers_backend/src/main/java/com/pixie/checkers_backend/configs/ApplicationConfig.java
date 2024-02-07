@@ -19,15 +19,6 @@ import org.springframework.web.server.adapter.WebHttpHandlerBuilder;
 public class ApplicationConfig {
 
     @Bean
-    public ReactiveUserDetailsService userDetailsService() {
-        UserDetails user = User.withUsername("user").password(passwordEncoder().encode("password"))
-                .roles("USER").build();
-        UserDetails admin = User.withUsername("admin").password(passwordEncoder().encode("admin"))
-                .roles("USER").build();
-        return new MapReactiveUserDetailsService(user, admin);
-    }
-
-    @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
