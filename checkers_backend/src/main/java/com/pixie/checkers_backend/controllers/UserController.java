@@ -26,7 +26,7 @@ public class UserController {
     }
 
     @PutMapping("")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody Mono<UserDTO> putUser(@AuthenticationPrincipal Mono<Principal> principal, @RequestBody UserModal modal){
         return principal.map(Principal::getName).flatMap(u -> userService.updateUser(u, modal));
     }

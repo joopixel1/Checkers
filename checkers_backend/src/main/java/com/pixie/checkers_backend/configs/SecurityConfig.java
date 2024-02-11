@@ -54,7 +54,7 @@ public class SecurityConfig {
                 .authorizeExchange(exchange -> exchange
                         .pathMatchers(HttpMethod.OPTIONS).permitAll()
                         .pathMatchers("/api/v1/auth/**").permitAll()
-                        .anyExchange().authenticated()
+                        .anyExchange().permitAll()
                 )
                 .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
                 .addFilterBefore(this::filterFunction, SecurityWebFiltersOrder.AUTHENTICATION)

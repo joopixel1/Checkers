@@ -1,9 +1,6 @@
 package com.pixie.checkers_backend.models.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NonNull;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,9 +12,10 @@ import java.util.List;
 
 @Document(value = "user")
 @Data
+@Builder
 @AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@NonNull
 public class User implements UserDetails {
 
 

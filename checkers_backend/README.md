@@ -22,20 +22,8 @@
 
 - Mongosh terminal
   - docker exec -it CC-mongodb mongosh "mongodb://CC:LeaveMe%23@localhost:27017/checkers?authSource=admin"
-  - show dbs
-  - use <dbs_name>
-  - show collections
-  - db.collectionName.insert({ field1: value1, field2: value2, ... })
-  - db.collectionName.find({ field: value })
-  - db.collectionName.find().pretty()
-  - db.collectionName.update({ field: value }, { $set: { newField: newValue } })
-  - db.collectionName.remove({ field: value })
-  - db.collectionName.aggregate([
-    { $match: { field: value }},
-    { $group: { _id: "$field", total: { $sum: 1 } }}
-    ])
-  - db.collectionName.createIndex({ field: 1 })
-  - db.collectionName.getIndexes()
+  - https://medium.com/@skhans/a-comprehensive-guide-to-data-modeling-in-mongodb-b63b2df9d9dd
+  - 
 
 
 
