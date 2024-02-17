@@ -7,7 +7,6 @@ import com.pixie.checkers_backend.repositories.UserRepository;
 import com.pixie.checkers_backend.services.interfaces.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -58,6 +57,5 @@ public class UserServiceImpl implements UserService {
     public Mono<Void> deleteUser(String username) {
         return userRepository.deleteById(username);
     }
-
 
 }

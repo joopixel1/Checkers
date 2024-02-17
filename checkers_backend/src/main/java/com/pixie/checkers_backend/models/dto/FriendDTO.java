@@ -16,7 +16,7 @@ public class FriendDTO {
     private String friend;
 
     public static FriendDTO mapToFriendDTO(Friend friend, String username){
-        return new FriendDTO(friend.getId(), (friend.getInitializer().equals(username)) ? friend.getAccepter() : friend.getInitializer());
+        return new FriendDTO(friend.getId(), (friend.getUser1().equals(username)) ? friend.getUser2() : friend.getUser1());
     }
 
 }

@@ -18,6 +18,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.util.ArrayList;
+
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
@@ -31,7 +33,7 @@ public class AuthServiceImpl implements AuthService {
     public Mono<String> signup(SignupModal modal) {
         return userService.createUser(new User(
                 modal.getUsername(), passwordEncoder.encode(modal.getPassword()), modal.getEmail(),
-                true, 1000, modal.getCountry(), modal.getLanguage(), modal.getImage()
+                true, 1000, modal.getCountry(), modal.getLanguage(), modal.getImage(), new ArrayList<>()
         )).flatMap(jwtTokenService::generateJWTToken);
     }
 

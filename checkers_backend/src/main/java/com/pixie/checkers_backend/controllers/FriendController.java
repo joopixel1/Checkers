@@ -1,6 +1,8 @@
 package com.pixie.checkers_backend.controllers;
 
+import com.pixie.checkers_backend.annotations.ValidUser;
 import com.pixie.checkers_backend.models.dto.FriendDTO;
+import com.pixie.checkers_backend.models.entities.FriendRequest;
 import com.pixie.checkers_backend.services.interfaces.FriendService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,22 +26,34 @@ public class FriendController {
         return principal.map(Principal::getName).flatMapMany(friendService::readFriends);
     }
 
-    @GetMapping("")
+    @GetMapping("/pending")
     @ResponseStatus(HttpStatus.OK)
-    public @ResponseBody Flux<FriendDTO> getFriendsPending(@AuthenticationPrincipal Mono<Principal> principal){
-        return principal.map(Principal::getName).flatMapMany(friendService::readFriendsPending);
+    public @ResponseBody Flux<FriendRequest> getFriendsPending(@AuthenticationPrincipal Mono<Principal> principal){
+        return principal.map(Principal::getName).flatMapMany(friendService::readFriendRequestsPending);
     }
 
-    @PutMapping("/{friend}")
+    @GetMapping("/waiting")
+    @ResponseStatus(HttpStatus.OK)
+    public @ResponseBody Flux<FriendRequest> getFriendsWaiting(@AuthenticationPrincipal Mono<Principal> principal){
+        return principal.map(Principal::getName).flatMapMany(friendService::readFriendRequestsWaiting);
+    }
+
+    @PostMapping("/request/{friend}")
     @ResponseStatus(HttpStatus.CREATED)
-    public @ResponseBody Mono<String> putFriend(@AuthenticationPrincipal Mono<Principal> principal, @PathVariable String friend){
-        return principal.map(Principal::getName).flatMap(u -> friendService.createFriends(u, friend));
+    public @ResponseBody Mono<FriendRequest> postFriendRequest(@AuthenticationPrincipal Mono<Principal> principal, @PathVariable @ValidUser String friend){
+        return principal.map(Principal::getName).flatMap(u -> friendService.createFriendRequest(u, friend));
     }
 
-    @DeleteMapping("/{friend}")
+    @PostMapping("/{friendId}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public @ResponseBody Mono<Void> postFriend(@AuthenticationPrincipal Mono<Principal> principal, @PathVariable String friendId){
+        return principal.map(Principal::getName).flatMap(u -> friendService.createFriend(u, friendId));
+    }
+
+    @DeleteMapping("/{friendId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public @ResponseBody Mono<Void> deleteFriend(@AuthenticationPrincipal Mono<Principal> principal, @PathVariable String friend){
-        return principal.map(Principal::getName).flatMap(u -> friendService.deleteFriend(u, friend));
+    public @ResponseBody Mono<Void> deleteFriend(@PathVariable String friendId){
+        return friendService.deleteFriend(friendId);
     }
 
 }

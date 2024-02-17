@@ -5,22 +5,18 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDateTime;
-import java.util.Date;
-
-@Document(value = "friend")
+@Document(value = "friend_request")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Friend {
+public class FriendRequest {
 
     @Id
     @EqualsAndHashCode.Include
     String id;
-    @ValidUser String user1;
-    @ValidUser String user2;
-    Date since;
+    @ValidUser String initializer;
+    @ValidUser String accepter;
 
 }
