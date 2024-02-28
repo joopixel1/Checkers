@@ -20,6 +20,14 @@
 - HTTP REST standards
     - (Response Status Codes) https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
 
+- Mongosh terminal
+  - docker exec -it CC-mongodb mongosh "mongodb://CC:LeaveMe%23@localhost:27017/checkers?authSource=admin"
+  - https://medium.com/@skhans/a-comprehensive-guide-to-data-modeling-in-mongodb-b63b2df9d9dd
+  - 
+
+
+
+
 
 ![img.png](images/img.png)
 

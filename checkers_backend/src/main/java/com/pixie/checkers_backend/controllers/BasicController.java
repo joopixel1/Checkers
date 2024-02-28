@@ -24,7 +24,7 @@ public class BasicController {
 
     @GetMapping("version")
     @ResponseStatus(HttpStatus.OK)
-    public @ResponseBody Mono<String> getVersion(Authentication authentication){
+    public @ResponseBody Mono<String> getVersion(){
         return Mono.just("Version: v1");
     }
 

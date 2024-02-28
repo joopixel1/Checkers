@@ -9,13 +9,12 @@ import org.springframework.lang.NonNull;
 @Getter
 @RequiredArgsConstructor
 @NoArgsConstructor(force = true)
-public class LoginModal {
+public class UserModal {
 
-    @NonNull
-    @NotBlank
-    private final String username;
-    @NonNull
-    @NotBlank
-    private final String password;
+    private final Boolean online;
+    private final String country;
+    private final String language;
+    private final Byte[] image;
 
 }
+

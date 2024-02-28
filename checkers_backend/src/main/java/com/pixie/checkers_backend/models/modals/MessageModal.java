@@ -9,13 +9,18 @@ import org.springframework.lang.NonNull;
 @Getter
 @RequiredArgsConstructor
 @NoArgsConstructor(force = true)
-public class LoginModal {
+public class MessageModal {
 
     @NonNull
-    @NotBlank
-    private final String username;
+    private final MessageType type;
     @NonNull
     @NotBlank
-    private final String password;
+    private final String path;
+    private final String topic;
+    private final String payload;
+
+    public enum MessageType {
+        PUBLISH, SUBSCRIBE, UNSUBSCRIBE
+    }
 
 }
