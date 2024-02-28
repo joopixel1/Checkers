@@ -15,8 +15,8 @@ public class FriendRequest {
 
     @Id
     @EqualsAndHashCode.Include
-    String id;
-    @ValidUser String initializer;
-    @ValidUser String accepter;
+    private String id;
+    private String initializer;
+    private String accepter;
 
 }

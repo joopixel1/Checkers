@@ -1,9 +1,11 @@
 package com.pixie.checkers_backend.controllers;
 
+import com.pixie.checkers_backend.annotations.ValidFriend;
 import com.pixie.checkers_backend.annotations.ValidUser;
 import com.pixie.checkers_backend.models.dto.FriendDTO;
 import com.pixie.checkers_backend.models.entities.FriendRequest;
 import com.pixie.checkers_backend.services.interfaces.FriendService;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,37 +24,37 @@ public class FriendController {
 
     @GetMapping("")
     @ResponseStatus(HttpStatus.OK)
-    public @ResponseBody Flux<FriendDTO> getFriends(@AuthenticationPrincipal Mono<Principal> principal){
-        return principal.map(Principal::getName).flatMapMany(friendService::readFriends);
+    public @ResponseBody Flux<FriendDTO> getFriends(@AuthenticationPrincipal Principal principal){
+        return friendService.readFriends(principal.getName());
     }
 
     @GetMapping("/pending")
     @ResponseStatus(HttpStatus.OK)
-    public @ResponseBody Flux<FriendRequest> getFriendsPending(@AuthenticationPrincipal Mono<Principal> principal){
-        return principal.map(Principal::getName).flatMapMany(friendService::readFriendRequestsPending);
+    public @ResponseBody Flux<FriendRequest> getFriendsPending(@AuthenticationPrincipal Principal principal){
+        return friendService.readFriendRequestsPending(principal.getName());
     }
 
     @GetMapping("/waiting")
     @ResponseStatus(HttpStatus.OK)
-    public @ResponseBody Flux<FriendRequest> getFriendsWaiting(@AuthenticationPrincipal Mono<Principal> principal){
-        return principal.map(Principal::getName).flatMapMany(friendService::readFriendRequestsWaiting);
+    public @ResponseBody Flux<FriendRequest> getFriendsWaiting(@AuthenticationPrincipal Principal principal){
+        return friendService.readFriendRequestsWaiting(principal.getName());
     }
 
     @PostMapping("/request/{friend}")
     @ResponseStatus(HttpStatus.CREATED)
-    public @ResponseBody Mono<FriendRequest> postFriendRequest(@AuthenticationPrincipal Mono<Principal> principal, @PathVariable @ValidUser String friend){
-        return principal.map(Principal::getName).flatMap(u -> friendService.createFriendRequest(u, friend));
+    public @ResponseBody Mono<FriendRequest> postFriendRequest(@AuthenticationPrincipal Principal principal, @PathVariable @ValidUser String friend){
+        return friendService.createFriendRequest(principal.getName(), friend);
     }
 
-    @PostMapping("/{friendId}")
+    @PostMapping("/{requestId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public @ResponseBody Mono<Void> postFriend(@AuthenticationPrincipal Mono<Principal> principal, @PathVariable String friendId){
-        return principal.map(Principal::getName).flatMap(u -> friendService.createFriend(u, friendId));
+    public @ResponseBody Mono<Void> postFriend(@AuthenticationPrincipal Principal principal, @PathVariable String requestId){
+        return friendService.createFriend(principal.getName(), requestId);
     }
 
     @DeleteMapping("/{friendId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public @ResponseBody Mono<Void> deleteFriend(@PathVariable String friendId){
+    public @ResponseBody Mono<Void> deleteFriend(@PathVariable @ValidFriend String friendId){
         return friendService.deleteFriend(friendId);
     }
 

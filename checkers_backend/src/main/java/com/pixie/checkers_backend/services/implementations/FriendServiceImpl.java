@@ -1,9 +1,11 @@
 package com.pixie.checkers_backend.services.implementations;
 
 import com.pixie.checkers_backend.models.dto.FriendDTO;
+import com.pixie.checkers_backend.models.entities.Chat;
 import com.pixie.checkers_backend.models.entities.Friend;
 import com.pixie.checkers_backend.models.entities.FriendRequest;
 import com.pixie.checkers_backend.models.entities.User;
+import com.pixie.checkers_backend.repositories.ChatRepository;
 import com.pixie.checkers_backend.repositories.FriendRepository;
 import com.pixie.checkers_backend.repositories.FriendRequestRepository;
 import com.pixie.checkers_backend.repositories.UserRepository;
@@ -22,6 +24,7 @@ public class FriendServiceImpl implements FriendService {
     private final FriendRepository friendRepository;
     private final FriendRequestRepository friendRequestRepository;
     private final UserRepository userRepository;
+    private final ChatRepository chatRepository;
 
     @Override
     public Mono<Void> createFriend(String username, String friendId) {
@@ -29,8 +32,8 @@ public class FriendServiceImpl implements FriendService {
                 .switchIfEmpty(Mono.error(new RuntimeException("FriendRequest not found for friendId: " + friendId)))
                 .flatMap(FR -> {
                     if (FR.getInitializer().equals(username)) return Mono.error(new RuntimeException("Wait for other user to accept your request"));
-                    Friend f = new Friend(null, FR.getInitializer(), FR.getAccepter(), new Date());
-                    // TODO create begin chat
+                    Friend f = new Friend(null, new Friend.UserInfo(FR.getInitializer(), Boolean.FALSE, new Date()),
+                            new Friend.UserInfo(FR.getAccepter(), Boolean.FALSE, new Date()), new Date());
                     return friendRequestRepository.deleteById(FR.getId())
                         .then(friendRepository.save(f).flatMap(nf -> Mono.when(
                                 userRepository.findById(FR.getInitializer()).flatMap(u -> {
@@ -40,7 +43,11 @@ public class FriendServiceImpl implements FriendService {
                                 userRepository.findById(FR.getAccepter()).flatMap(u -> {
                                     u.getFriendIds().add(nf.getId());
                                     return userRepository.save(u);
-                                })
+                                }),
+                                chatRepository.save(new Chat(
+                                        null, Chat.ChatType.JOIN, new Date(),
+                                        null, null, nf.getId()
+                                ))
                         )));
         });
     }
@@ -83,6 +90,7 @@ public class FriendServiceImpl implements FriendService {
     @Override
     public Mono<Void> deleteFriend(String friendId) {
         return friendRepository.deleteById(friendId);
+        // TODO also delete all chats.
     }
 
     @Override

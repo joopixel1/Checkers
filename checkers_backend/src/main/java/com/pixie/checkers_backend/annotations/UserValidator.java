@@ -20,4 +20,5 @@ public class UserValidator implements ConstraintValidator<ValidUser, String> {
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
         return userRepository.existsById(s).subscribeOn(Schedulers.boundedElastic()).toFuture().get();
     }
+
 }

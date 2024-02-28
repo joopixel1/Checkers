@@ -21,14 +21,14 @@ public class UserController {
 
     @GetMapping("")
     @ResponseStatus(HttpStatus.OK)
-    public @ResponseBody Mono<UserDTO> getUser(@AuthenticationPrincipal Mono<Principal> principal){
-        return principal.map(Principal::getName).flatMap(userService::readUser);
+    public @ResponseBody Mono<UserDTO> getUser(@AuthenticationPrincipal Principal principal){
+        return userService.readUser(principal.getName());
     }
 
     @PutMapping("")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public @ResponseBody Mono<UserDTO> putUser(@AuthenticationPrincipal Mono<Principal> principal, @RequestBody UserModal modal){
-        return principal.map(Principal::getName).flatMap(u -> userService.updateUser(u, modal));
+    public @ResponseBody Mono<UserDTO> putUser(@AuthenticationPrincipal Principal principal, @RequestBody UserModal modal){
+        return userService.updateUser(principal.getName(), modal);
     }
 
     @PatchMapping("")
@@ -40,8 +40,8 @@ public class UserController {
 
     @DeleteMapping("")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public @ResponseBody Mono<Void> deleteUser(@AuthenticationPrincipal Mono<Principal> principal){
-        return principal.map(Principal::getName).flatMap(userService::deleteUser);
+    public @ResponseBody Mono<Void> deleteUser(@AuthenticationPrincipal Principal principal){
+        return userService.deleteUser(principal.getName());
     }
 
 }

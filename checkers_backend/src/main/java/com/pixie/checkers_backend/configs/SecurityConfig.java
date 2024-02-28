@@ -85,7 +85,7 @@ public class SecurityConfig {
                         UserDetails ud = tuple.getT1();
                         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(ud, null, ud.getAuthorities());
                         authenticationToken.setDetails(exchange.getRequest());
-                        return chain.filter(exchange).contextWrite(ReactiveSecurityContextHolder.withAuthentication(authenticationToken));
+                        return chain.filter(exchange.mutate().principal(Mono.just(authenticationToken)).build()).contextWrite(ReactiveSecurityContextHolder.withAuthentication(authenticationToken));
                     } else {
                         return chain.filter(exchange);
                     }
