@@ -7,30 +7,21 @@ import com.pixie.checkers_backend.annotations.*;
 import com.pixie.checkers_backend.models.modals.MessageModal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
 import org.springframework.aop.framework.AopProxyUtils;
-import org.springframework.boot.web.servlet.server.Session;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.data.util.Pair;
 import org.springframework.lang.NonNull;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
-import org.springframework.web.reactive.socket.HandshakeInfo;
 import org.springframework.web.reactive.socket.WebSocketHandler;
 import org.springframework.web.reactive.socket.WebSocketMessage;
 import org.springframework.web.reactive.socket.WebSocketSession;
 import reactor.core.publisher.*;
-import reactor.core.scheduler.Schedulers;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.security.Principal;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.springframework.util.ReflectionUtils.invokeMethod;
 
@@ -118,9 +109,9 @@ public class MyWebSocketHandler implements WebSocketHandler {
                 } else if (annotation.annotationType() == SocketTopic.class) {
                     arguments.add(modal.getTopic());
                     break;
-                } else if (annotation.annotationType() == SocketPrincipal.class){
+                } else if (annotation.annotationType() == SocketAuthentication.class){
                     try {
-                        arguments.add( session.getHandshakeInfo().getHeaders().getFirst("principal"));
+                        arguments.add( session.getHandshakeInfo().getPrincipal());
                     }
                     catch (Exception e){
                         throw new RuntimeException(e);
@@ -130,7 +121,6 @@ public class MyWebSocketHandler implements WebSocketHandler {
             }
             if(arguments.size() != i+1) throw new RuntimeException("Argument has no annotation");
         }
-        //TODO: work on principal
         return arguments.toArray();
     }
 

@@ -89,8 +89,12 @@ public class FriendServiceImpl implements FriendService {
 
     @Override
     public Mono<Void> deleteFriend(String friendId) {
-        return friendRepository.deleteById(friendId);
-        // TODO also delete all chats.
+        return friendRepository.deleteById(friendId)
+                .then(chatRepository.save(new Chat(
+                        null, Chat.ChatType.LEAVE, new Date(),
+                        null, null, friendId
+                )))
+                .then(Mono.empty());
     }
 
     @Override

@@ -26,15 +26,11 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public Mono<Chat> createChat(String username, ChatModal modal) {
-        return chatRepository.save(Chat.builder()
-                .type(Chat.ChatType.CHAT)
-                .timeStamp(new Date())
-                .content(modal.getContent())
-                .sender(username)
-                .friendID(modal.getFriendID())
-                .build());
+        return chatRepository.save(new Chat(
+                    null, Chat.ChatType.CHAT, new Date(),
+                    modal.getContent(), username, modal.getFriendID()
+            ));
     }
-
 
     @Override
     public Flux<Chat> readChat(String friendID, Integer page) {
@@ -59,7 +55,6 @@ public class ChatServiceImpl implements ChatService {
                 .switchIfEmpty(Mono.error(new RuntimeException("No chat found for chatId: " + chatID)))
                 .flatMap(c -> {
                     if(!c.getSender().equals(username)) return Mono.error(new RuntimeException("You are not the sender"));
-                    // TODO - dont actually delete just modify to say value was deleted.
                     c.setTimeStamp(new Date());
                     c.setType(Chat.ChatType.DELETED);
                     c.setContent("");

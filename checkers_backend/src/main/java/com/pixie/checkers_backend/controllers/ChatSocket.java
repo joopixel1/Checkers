@@ -6,11 +6,8 @@ import com.pixie.checkers_backend.models.entities.Chat;
 import com.pixie.checkers_backend.models.modals.ChatModal;
 import com.pixie.checkers_backend.services.interfaces.ChatService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.core.Authentication;
 import reactor.core.publisher.Mono;
-
-import java.security.Principal;
 
 @SocketController("/chat")
 @RequiredArgsConstructor
@@ -19,22 +16,22 @@ public class ChatSocket {
     private final ChatService chatService;
 
     @PublishMapping("/add")
-    public Mono<Chat> addChat(@SocketPrincipal String principal, @SocketPayload ChatModal modal){
-        return chatService.createChat(principal, modal);
+    public Mono<Chat> addChat(@SocketAuthentication Mono<Authentication> principal, @SocketPayload ChatModal modal){
+        return principal.flatMap(p -> chatService.createChat(p.getName(), modal));
     }
 
     @PublishMapping("/delete")
-    public Mono<Chat> deleteChat(@SocketPrincipal String principal, @SocketPayload String chatID){
-        return chatService.deleteChat(principal, chatID);
+    public Mono<Chat> deleteChat(@SocketAuthentication Mono<Authentication> principal, @SocketPayload String chatID){
+        return principal.flatMap(p -> chatService.deleteChat(p.getName(), chatID));
     }
 
     @SubscribeMapping("")
-    public Mono<FriendDTO> subscribeChat(@SocketPrincipal String principal, @SocketTopic String friendID){
-        return chatService.subscribeChat(principal, friendID.substring(friendID.lastIndexOf('/')+1));
+    public Mono<FriendDTO> subscribeChat(@SocketAuthentication Mono<Authentication> principal, @SocketTopic String friendID){
+        return principal.flatMap(p -> chatService.subscribeChat(p.getName(), friendID.substring(friendID.lastIndexOf('/')+1)));
     }
 
     @UnSubscribeMapping("")
-    public Mono<FriendDTO> unsubscribeChat(@SocketPrincipal String principal, @SocketTopic String friendID){
+    public Mono<FriendDTO> unsubscribeChat(@SocketAuthentication String principal, @SocketTopic String friendID){
         return chatService.unsubscribeChat(principal, friendID.substring(friendID.lastIndexOf('/')+1));
     }
 

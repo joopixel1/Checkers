@@ -271,7 +271,6 @@ public class MyWebSocketService implements WebSocketService, Lifecycle {
         // the server implementation once the handshake HTTP exchange is done.
         HttpHeaders headers = new HttpHeaders();
         headers.addAll(request.getHeaders());
-        headers.add("principal", principal.getName());
         MultiValueMap<String, HttpCookie> cookies = request.getCookies();
         String logPrefix = exchange.getLogPrefix();
         InetSocketAddress remoteAddress = request.getRemoteAddress();
