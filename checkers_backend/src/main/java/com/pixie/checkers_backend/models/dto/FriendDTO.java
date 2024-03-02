@@ -13,10 +13,13 @@ public class FriendDTO {
 
     @EqualsAndHashCode.Include
     private String id;
-    private Friend.UserInfo friend;
+    private String friend;
+    private Friend.UserInfo friendInfo;
 
     public static FriendDTO mapToFriendDTO(Friend friend, String username){
-        return new FriendDTO(friend.getId(), (friend.getUser1().getUser().equals(username)) ? friend.getUser2() : friend.getUser1());
+        return (friend.getUser1().equals(username)) ?
+                (new FriendDTO(friend.getId(), friend.getUser2(), friend.getUserInfo2())) :
+                (new FriendDTO(friend.getId(), friend.getUser1(), friend.getUserInfo1()));
     }
 
 }

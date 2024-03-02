@@ -19,15 +19,16 @@ public class Friend {
     @Id
     @EqualsAndHashCode.Include
     private String id;
-    private UserInfo user1;
-    private UserInfo user2;
+    private String user1;
+    private String user2;
+    private UserInfo userInfo1;
+    private UserInfo userInfo2;
     private Date since;
 
     @Data
     @Builder
     @AllArgsConstructor
     public static class UserInfo {
-        private String user;
         private Boolean online;
         private Date lastOnline;
     }

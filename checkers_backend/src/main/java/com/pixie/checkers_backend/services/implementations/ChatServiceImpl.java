@@ -65,7 +65,8 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public Mono<FriendDTO> subscribeChat(String username, String friendID) {
         return friendRepository.findById(friendID).flatMap(friend -> {
-            friend.getUser1().setOnline(Boolean.TRUE);
+            if(friend.getUser1().equals(username)) friend.getUserInfo1().setOnline(Boolean.TRUE);
+            else friend.getUserInfo2().setOnline(Boolean.TRUE);
             return friendRepository.save(friend);
         }).map(friend -> FriendDTO.mapToFriendDTO(friend, username));
     }
@@ -73,7 +74,8 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public Mono<FriendDTO> unsubscribeChat(String username, String friendID) {
         return friendRepository.findById(friendID).flatMap(friend -> {
-            friend.getUser1().setLastOnline(new Date());
+            if(friend.getUser1().equals(username)) friend.getUserInfo1().setLastOnline(new Date());
+            else friend.getUserInfo2().setLastOnline(new Date());
             return friendRepository.save(friend);
         }).map(friend -> FriendDTO.mapToFriendDTO(friend, username));
     }

@@ -23,7 +23,20 @@
 - Mongosh terminal
   - docker exec -it CC-mongodb mongosh "mongodb://CC:LeaveMe%23@localhost:27017/checkers?authSource=admin"
   - https://medium.com/@skhans/a-comprehensive-guide-to-data-modeling-in-mongodb-b63b2df9d9dd
-  - 
+
+- WebSocket
+  - This was my first time throughly seeing the power of java and why spring is  so powerful. 
+  - For my websockets, I was able to ues the power of Annotations with Reflections to create spring like annotations but for websocket methods.
+  - I created three major method annotations: PublishMapping, SubscribeMapping and Unsubscribe mapping. 
+  - THis allowed future development to be a lot easier. 
+  - One of the funnest pieces of code I have ever written. 
+  - Check it out in config/MyWebSocketHandler.java
+
+- Database Efficiency
+  - Added some indexes on some of the tables in mongodb to fasten search operation.
+  - TODO
+
+- 
 
 
 

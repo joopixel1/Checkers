@@ -1,6 +1,7 @@
 package com.pixie.checkers_backend.services.implementations;
 
 import com.pixie.checkers_backend.models.dto.FriendDTO;
+import com.pixie.checkers_backend.models.dto.UserDTO;
 import com.pixie.checkers_backend.models.entities.Chat;
 import com.pixie.checkers_backend.models.entities.Friend;
 import com.pixie.checkers_backend.models.entities.FriendRequest;
@@ -11,6 +12,9 @@ import com.pixie.checkers_backend.repositories.FriendRequestRepository;
 import com.pixie.checkers_backend.repositories.UserRepository;
 import com.pixie.checkers_backend.services.interfaces.FriendService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -32,8 +36,8 @@ public class FriendServiceImpl implements FriendService {
                 .switchIfEmpty(Mono.error(new RuntimeException("FriendRequest not found for friendId: " + friendId)))
                 .flatMap(FR -> {
                     if (FR.getInitializer().equals(username)) return Mono.error(new RuntimeException("Wait for other user to accept your request"));
-                    Friend f = new Friend(null, new Friend.UserInfo(FR.getInitializer(), Boolean.FALSE, new Date()),
-                            new Friend.UserInfo(FR.getAccepter(), Boolean.FALSE, new Date()), new Date());
+                    Friend f = new Friend(null, FR.getInitializer(), FR.getAccepter(), new Friend.UserInfo(Boolean.FALSE, new Date()),
+                            new Friend.UserInfo(Boolean.FALSE, new Date()), new Date());
                     return friendRequestRepository.deleteById(FR.getId())
                         .then(friendRepository.save(f).flatMap(nf -> Mono.when(
                                 userRepository.findById(FR.getInitializer()).flatMap(u -> {
@@ -65,7 +69,7 @@ public class FriendServiceImpl implements FriendService {
                             .or(friendRequestRepository.existsByInitializerIsAndAccepterIs(friend, username))
                             .flatMap(ex -> {
                                 if (ex) return Mono.error(new RuntimeException("Friend Request Exists"));
-                                FriendRequest FR = new FriendRequest(null, username, friend);
+                                FriendRequest FR = new FriendRequest(null, username, friend, new Date());
                                 return friendRequestRepository.save(FR);
                             });
                 });
@@ -98,9 +102,11 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
-    public Flux<String> search(String username) {
-        // TODO
-        return null;
+    public Flux<UserDTO> search(String username, String search, Integer page) {
+        // TODO: create some internal mongodb function to get it for you. ANd add some indexes to speed up.
+        return userRepository.findById(username).map(User::getFriendIds)
+                .flatMapMany(f -> userRepository.findAllByUsernameLikeIgnoreCase(search, PageRequest.of(50, page)))
+                .map(UserDTO::mapToUserDTO);
     }
 
 }

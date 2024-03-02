@@ -1,5 +1,6 @@
 package com.pixie.checkers_backend.configs;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshakerFactory;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +25,8 @@ import java.util.Map;
 public class ApplicationConfig {
 
     @Bean
-    public HandlerMapping handlerMapping(ApplicationContext applicationContext){
-        return new SimpleUrlHandlerMapping(Map.of("/api/v1/ws", new MyWebSocketHandler(applicationContext)), Ordered.HIGHEST_PRECEDENCE);
+    public HandlerMapping handlerMapping(ApplicationContext applicationContext, ObjectMapper objectMapper){
+        return new SimpleUrlHandlerMapping(Map.of("/api/v1/ws", new MyWebSocketHandler(applicationContext, objectMapper)), Ordered.HIGHEST_PRECEDENCE);
     }
 
     @Bean
@@ -38,6 +39,9 @@ public class ApplicationConfig {
         return new BCryptPasswordEncoder();
     }
 
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper();
+    }
 
 
 }

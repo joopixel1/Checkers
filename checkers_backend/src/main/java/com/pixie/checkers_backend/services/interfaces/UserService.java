@@ -1,5 +1,6 @@
 package com.pixie.checkers_backend.services.interfaces;
 
+import com.github.fge.jsonpatch.JsonPatch;
 import com.pixie.checkers_backend.models.dto.UserDTO;
 import com.pixie.checkers_backend.models.entities.User;
 import com.pixie.checkers_backend.models.modals.UserModal;
@@ -18,6 +19,8 @@ public interface UserService extends ReactiveUserDetailsService {
     public Flux<UserDTO> readAllUsers();
 
     public Mono<UserDTO> updateUser(String username, UserModal modal);
+
+    public Mono<UserDTO> patchUser(String username, JsonPatch jsonPatch);
 
     public Mono<Void> deleteUser(String username);
 

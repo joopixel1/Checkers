@@ -1,12 +1,17 @@
 package com.pixie.checkers_backend.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.fge.jsonpatch.JsonPatch;
+import com.github.fge.jsonpatch.JsonPatchException;
 import com.pixie.checkers_backend.models.dto.UserDTO;
 import com.pixie.checkers_backend.models.modals.UserModal;
 import com.pixie.checkers_backend.services.interfaces.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
@@ -31,11 +36,10 @@ public class UserController {
         return userService.updateUser(principal.getName(), modal);
     }
 
-    @PatchMapping("")
+    @PatchMapping(path = "", consumes = "application/json-patch+json")
     @ResponseStatus(HttpStatus.OK)
-    public @ResponseBody Mono<String> patchUser(){
-        // TODO
-        return Mono.just("Version: v1");
+    public @ResponseBody Mono<UserDTO> patchUser(@AuthenticationPrincipal Principal principal, @RequestBody JsonPatch jsonPatch){
+        return userService.patchUser(principal.getName(), jsonPatch);
     }
 
     @DeleteMapping("")

@@ -30,11 +30,12 @@ import static org.springframework.util.ReflectionUtils.invokeMethod;
 @RequiredArgsConstructor
 public class MyWebSocketHandler implements WebSocketHandler {
 
-    private final ApplicationContext applicationContext;
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final HashMap<String, List<WebSocketSession>> topics = new HashMap<>();
     private static final HashMap<WebSocketSession, List<String>> sessions = new HashMap<>();
+
+    private final ApplicationContext applicationContext;
+    private final ObjectMapper objectMapper;
 
     @NonNull
     @Override

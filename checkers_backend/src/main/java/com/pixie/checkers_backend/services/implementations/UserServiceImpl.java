@@ -1,5 +1,10 @@
 package com.pixie.checkers_backend.services.implementations;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.fge.jsonpatch.JsonPatch;
+import com.github.fge.jsonpatch.JsonPatchException;
 import com.pixie.checkers_backend.models.dto.UserDTO;
 import com.pixie.checkers_backend.models.entities.User;
 import com.pixie.checkers_backend.models.modals.UserModal;
@@ -15,6 +20,7 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
+    private final ObjectMapper objectMapper;
     private final UserRepository userRepository;
 
     @Override
@@ -51,6 +57,18 @@ public class UserServiceImpl implements UserService {
                     if(modal.getImage() != null) user.setImage(modal.getImage());
                     return userRepository.save(user).map(UserDTO::mapToUserDTO);
                 });
+    }
+
+    @Override
+    public Mono<UserDTO> patchUser(String username, JsonPatch jsonPatch){
+        return userRepository.findById(username).handle((u, sink) -> {
+            try {
+                JsonNode patched =  jsonPatch.apply(objectMapper.convertValue(u, JsonNode.class));
+                sink.next(objectMapper.treeToValue(patched, UserDTO.class));
+            } catch (JsonPatchException | JsonProcessingException e) {
+                sink.error(new RuntimeException(e));
+            }
+        });
     }
 
     @Override

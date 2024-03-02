@@ -3,9 +3,12 @@ package com.pixie.checkers_backend.controllers;
 import com.pixie.checkers_backend.annotations.ValidFriend;
 import com.pixie.checkers_backend.annotations.ValidUser;
 import com.pixie.checkers_backend.models.dto.FriendDTO;
+import com.pixie.checkers_backend.models.dto.UserDTO;
 import com.pixie.checkers_backend.models.entities.FriendRequest;
 import com.pixie.checkers_backend.services.interfaces.FriendService;
+import jakarta.validation.constraints.NotBlank;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -56,6 +59,12 @@ public class FriendController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public @ResponseBody Mono<Void> deleteFriend(@PathVariable @ValidFriend String friendId){
         return friendService.deleteFriend(friendId);
+    }
+
+    @GetMapping("/search")
+    @ResponseStatus(HttpStatus.OK)
+    public @ResponseBody Flux<UserDTO> search(@AuthenticationPrincipal Principal principal, @RequestParam @NotBlank String value, @RequestParam Integer page){
+        return friendService.search(principal.getName(), value, page);
     }
 
 }
